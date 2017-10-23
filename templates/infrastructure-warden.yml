@@ -1,0 +1,39 @@
+meta:
+  environment: influxdata-nozzle-warden
+
+  stemcell:
+    name: bosh-warden-boshlite-ubuntu-trusty-go_agent
+    version: latest
+
+
+jobs:
+  - name: influxdata-firehose-nozzle
+    networks:
+      - name: influxdata-nozzle-network
+
+compilation:
+  cloud_properties:
+    name: random
+
+resource_pools:
+  - name: influxdata-nozzle-pool
+    cloud_properties:
+      name: random
+
+networks:
+- name: influxdata-nozzle-network
+  type: manual
+  subnets:
+  - range: 10.244.10.24/29
+    name: chronograf
+    gateway: 10.244.10.25
+
+update:
+  canaries: 1
+  max_in_flight: 1
+  canary_watch_time: 1000-30000
+  update_watch_time: 1000-30000
+
+
+
+

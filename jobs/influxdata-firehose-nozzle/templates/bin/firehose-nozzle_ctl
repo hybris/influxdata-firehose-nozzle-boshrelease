@@ -1,0 +1,69 @@
+#!/bin/bash -e
+
+export PATH=/var/vcap/packages/influxdata-firehose-nozzle/:$PATH
+
+RUN_DIR=/var/vcap/sys/run/influxdata-firehose-nozzle
+LOG_DIR=/var/vcap/sys/log/influxdata-firehose-nozzle
+JOB_DIR=/var/vcap/jobs/influxdata-firehose-nozzle
+
+PIDFILE=$RUN_DIR/influxdata-firehose-nozzle.pid
+
+pid_guard() {
+  echo "------------ STARTING `basename $0` at `date` --------------" | tee /dev/stderr
+  pidfile=$1
+  name=$2
+
+  if [ -f "$pidfile" ]; then
+    pid=$(head -1 "$pidfile")
+
+    if [ -n "$pid" ] && [ -e /proc/$pid ]; then
+      echo "$name is already running, please stop it first"
+      exit 1
+    fi
+
+    echo "Removing stale pidfile..."
+    rm $pidfile
+  fi
+}
+
+
+
+
+case $1 in
+
+  start)
+    pid_guard $PIDFILE "influxdata-firehose-nozzle"
+
+    mkdir -p $RUN_DIR
+    mkdir -p $LOG_DIR
+
+    chown vcap:vcap $RUN_DIR
+    chown -R vcap:vcap $LOG_DIR
+
+    exec >>$LOG_DIR/doppler.stdout.log  \
+       2>>$LOG_DIR/doppler.stderr.log
+       
+    echo $$ > $PIDFILE
+    chown vcap:vcap $PIDFILE
+
+    export CONFIG_FILE=$JOB_DIR/config/config.json
+
+    cd /var/vcap/packages/influxdata-firehose-nozzle
+
+    exec chpst -u vcap:vcap /var/vcap/packages/influxdata-firehose-nozzle/firehose-nozzle \
+      -config $CONFIG_FILE
+
+
+    ;;
+
+  stop)
+    kill_and_wait $PIDFILE
+
+    ;;
+
+  *)
+    echo "Usage: firehose-nozzle_ctl {start|stop}"
+
+    ;;
+
+esac

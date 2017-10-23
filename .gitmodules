@@ -1,0 +1,3 @@
+[submodule "src/github.com/influxdata/influxdb-firehose-nozzle"]
+	path = src/github.com/influxdata/influxdb-firehose-nozzle
+	url = https://github.com/influxdata/influxdb-firehose-nozzle.git

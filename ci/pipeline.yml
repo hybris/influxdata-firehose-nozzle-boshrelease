@@ -1,0 +1,181 @@
+groups:
+- name: build
+  jobs:
+  - testflight
+  - rc
+  - shipit
+- name: version
+  jobs:
+  - patch
+  - minor
+  - major
+
+jobs:
+- name: testflight
+  public: false
+  serial: true
+  plan:
+  - do:
+    - aggregate:
+      - get: influxdata-firehose-nozzle-boshrelease
+        resource: git-influxdata-firehose-nozzle-boshrelease
+      - get: git-influxdata-firehose-nozzle-boshrelease-release-changes
+        trigger: false
+    - task: create-release-and-deploy
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: teamidefix/influxdb-boshrelease-pipeline
+        inputs:
+        - {name: influxdata-firehose-nozzle-boshrelease}
+        run:
+          path: ./influxdata-firehose-nozzle-boshrelease/ci/scripts/create_release_and_deploy.sh
+          args: []
+        params:
+          bosh_target: ((bosh-lite-build.target))
+          bosh_username: ((bosh-lite-build.username))
+          bosh_password: ((bosh-lite-build.password))
+
+- name: rc
+  public: false
+  plan:
+  - aggregate:
+    - get: boshrelease
+      resource: git-influxdata-firehose-nozzle-boshrelease
+      passed: [testflight]
+      trigger: true
+    - get: version
+      trigger: false
+      params: {bump: minor, pre: rc}
+  - put: version
+    params: {file: version/number}
+
+- name: patch
+  public: false
+  plan:
+  - aggregate:
+    - get: version
+      trigger: false
+      params: {bump: patch}
+  - put: version
+    params: {file: version/number}
+
+- name: minor
+  public: false
+  plan:
+  - aggregate:
+    - get: version
+      trigger: false
+      params: {bump: minor}
+  - put: version
+    params: {file: version/number}
+
+- name: major
+  public: false
+  plan:
+  - aggregate:
+    - get: version
+      trigger: false
+      params: {bump: major}
+  - put: version
+    params: {file: version/number}
+
+- name: shipit
+  public: false
+  serial: true
+  plan:
+  - aggregate:
+    - get: version
+      passed: [rc]
+      params: {bump: final}
+    - get: boshrelease
+      resource: git-influxdata-firehose-nozzle-boshrelease
+      passed: [rc]
+  - task: create-final-release
+    config:
+      platform: linux
+      image_resource:
+          type: docker-image
+          source:
+            repository: teamidefix/influxenterprise-boshrelease-pipeline
+      inputs:
+      - {name: boshrelease, path: influxdata-firehose-nozzle-boshrelease}
+      - {name: version}
+      outputs:
+      - {name: create-final-release, path: output}
+      run:
+        path: ./influxdata-firehose-nozzle-boshrelease/ci/scripts/shipit.sh
+        args: []
+      params:
+        release_name: "Influxdata firehose nozzle BOSH release"
+        bosh_target: ((bosh-lite-build.target))
+        bosh_username: ((bosh-lite-build.username))
+        bosh_password: ((bosh-lite-build.password))
+        aws_access_key_id:  ((user-aws-concourse.aws_access_key))
+        aws_secret_access_key: ((user-aws-concourse.aws_secret_key))
+        promotion_branch: master
+        output_dir: ../output/influxdata-firehose-nozzle-boshrelease
+  - put: git-influxdata-firehose-nozzle-boshrelease
+    params:
+      repository: create-final-release/influxdata-firehose-nozzle-boshrelease
+      rebase: true
+  - aggregate:
+    - put: version
+      params: {file: version/number}
+    - put: final-release
+      params:
+        from: create-final-release/influxdata-firehose-nozzle-boshrelease/releases/influxdata-firehose-nozzle/influxdata-firehose-nozzle-(.*).tgz
+        to: influxdata-firehose-nozzle-boshrelease/
+    - put: github-final-release
+      params:
+        name: create-final-release/influxdata-firehose-nozzle-boshrelease/release/name
+        tag: create-final-release/influxdata-firehose-nozzle-boshrelease/release/tag
+        body: create-final-release/influxdata-firehose-nozzle-boshrelease/release/notes.md
+        globs: [create-final-release/influxdata-firehose-nozzle-boshrelease/releases/influxdata-firehose-nozzle/influxdata-firehose-nozzle-*.tgz]
+
+resources:
+- name: version
+  type: semver
+  source:
+    key: current-version
+    bucket: influxdata-firehose-nozzle-boshrelease-pipeline
+    access_key_id: ((user-aws-concourse-idefixoperationsprod.aws_access_key))
+    secret_access_key: ((user-aws-concourse-idefixoperationsprod.aws_secret_key))
+    initial_version: 0.0.0
+
+- name: git-influxdata-firehose-nozzle-boshrelease
+  type: git
+  source:
+    uri: ((git.uri))
+    branch: ((git.branch))
+
+- name: git-influxdata-firehose-nozzle-boshrelease-release-changes
+  type: git
+  source:
+    uri: ((git.uri))
+    branch: ((git.branch))
+    paths:
+      - src/**/*
+      - jobs/**/*
+      - packages/**/*
+      - config/blobs.yml
+      - .final_builds/**/*
+      - templates/**/*
+      - .gitmodules
+
+- name: github-final-release
+  type: github-release
+  source:
+    user: hybris
+    repository: influxdata-firehose-nozzle-boshrelease
+    access_token: ((github.accessToken))
+
+- name: final-release
+  type: s3
+  source:
+    bucket: blobs-yaas-idefix
+    regexp: influxdata-firehose-nozzle-boshrelease/influxdata-firehoze-nozzle-(.*).tgz
+    access_key_id: ((user-aws-concourse.aws_access_key))
+    secret_access_key: ((user-aws-concourse.aws_secret_key))

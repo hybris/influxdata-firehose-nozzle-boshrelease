@@ -1,0 +1,23 @@
+set -e -x
+
+export GOROOT=$(readlink -nf /var/vcap/packages/golang1.7)
+export PATH=$GOROOT/bin:$PATH
+export GOPATH=$PWD/go
+mkdir -p go/src
+mv github.com go/src
+find *
+cd $PWD/go/src/github.com/influxdata/influxdb-firehose-nozzle
+
+apt-get update
+
+apt-get -y install software-properties-common
+
+add-apt-repository ppa:masterminds/glide && sudo apt-get update
+apt-get -y install glide git
+
+
+glide install
+
+go build -o firehose-nozzle
+cp -a firehose-nozzle ${BOSH_INSTALL_TARGET}
+

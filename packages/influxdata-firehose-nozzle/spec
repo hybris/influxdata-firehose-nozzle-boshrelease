@@ -1,0 +1,14 @@
+---
+name: influxdata-firehose-nozzle
+
+dependencies:
+- golang1.7
+
+files:
+  - github.com/influxdata/influxdb-firehose-nozzle/*.*
+  - github.com/influxdata/influxdb-firehose-nozzle/influxdbclient/*.go
+  - github.com/influxdata/influxdb-firehose-nozzle/influxdbfirehosenozzle/*.go
+  - github.com/influxdata/influxdb-firehose-nozzle/logger/*.go
+  - github.com/influxdata/influxdb-firehose-nozzle/nozzleconfig/*.go
+  - github.com/influxdata/influxdb-firehose-nozzle/cfinstanceinfoapi/*.go
+  - github.com/influxdata/influxdb-firehose-nozzle/uaatokenfetcher/*.go

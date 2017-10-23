@@ -1,0 +1,21 @@
+{
+  "UAAURL": "<%= p('uaa.url') %>",
+  "Client": "<%= p('uaa.user') %>",
+  "ClientSecret": "<%= p('uaa.password') %>",
+  "TrafficControllerURL": "<%= p('loggregator.url') %>",
+  "FirehoseSubscriptionID": "<%= p('loggregator.subscription-id') %>",
+  "InfluxDbUrl": "<%= p('influx.url') %>",
+  "InfluxDbDatabase": "<%= p('influx.db') %>",
+  "InfluxDbUser": "<%= p('influx.user') %>",
+  "InfluxDbPassword": "<%= p('influx.password') %>",
+  "InfluxDbAllowSelfSigned": <%= p('influx.trust-cert') %>,
+  "FlushDurationSeconds": <%= p('influx.flush-duration') %>,
+  "SsLSkipVerify": <%= p('influx.trust-cert') %>,
+  "MetricPrefix": "<%= p('influx.prefix') %>",
+  "Deployment": "<%= p('influx.deployment-name') %>",
+  "DeploymentFilter": "<%= p('influx.deployment-filter') %>",
+  "EventFilter": "<%= p('influx.event-filter') %>",
+  "DisableAccessControl": <%= p('influx.disable-access-control') %>,
+  "IdleTimeoutSeconds" : <%= p('influx.idle-timeoute') %>,
+  "AppInfoApiUrl": "<%= p('influx.app-info-api-url') %>"
+}

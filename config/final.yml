@@ -1,0 +1,7 @@
+---
+final_name: influxdata-firehose-nozzle
+blobstore:
+  provider: s3
+  options:
+    folder: influxdb-firehose-nozzle-boshrelease
+    bucket_name: blobs-yaas-idefix

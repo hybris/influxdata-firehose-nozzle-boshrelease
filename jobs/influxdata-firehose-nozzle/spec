@@ -1,0 +1,65 @@
+---
+name: influxdata-firehose-nozzle
+
+packages:
+- influxdata-firehose-nozzle
+
+templates:
+  config/config.json.erb: config/config.json
+  bin/firehose-nozzle_ctl: bin/firehose-nozzle_ctl
+
+properties:
+  uaa.url:
+    description: "URL of authentication endpoint"
+    default: ""
+  uaa.user:
+    description: "Cloud Foundry Firehose Client"
+    default: ""
+  uaa.password:
+    description: "Cloud Foundry Firehose Secret"
+    default: ""
+  loggregator.url:
+    description: "URL of doppler / loggregator endpoint"
+    default: ""
+  loggregator.subscription-id:
+    description: "Firehose subscription-id"
+    default: "influxdb-firehose-nozzle"
+  influx.url:
+    description: "URL of influxDB"
+    default: ""
+  influx.db:
+    description: "Influx DB name"
+    default: ""
+  influx.user:
+    description: "Influx DB user"
+    default: ""
+  influx.password:
+    description: "Influx DB password"
+    default: ""
+  influx.trust-cert:
+    description: "Allow selfsigned certificates"
+    default: true
+  influx.flush-duration:
+    description: "Duration to send batch requests to influx DB in seconds"
+    default: 15
+  influx.prefix:
+    description: "Measurement prefix"
+    default: "influxclient"
+  influx.deployment-name:
+    description: "Deployment name"
+    default: "deployment-name"
+  influx.disable-access-control:
+    description: "Disable influx DB access controll"
+    default: false
+  influx.idle-timeoute:
+    description: "Idle time out"
+    default: 60
+  influx.deployment-filter:
+    description: "Deployment filter"
+    default: "deployment-filter"
+  influx.event-filter:
+    description: "Event filter"
+    default: "HttpStop, CounterEvent, Error, HttpStart, HttpStartStop, ContainerMetric"
+  influx.app-info-api-url:
+    description: "App info api url"
+    default: ""

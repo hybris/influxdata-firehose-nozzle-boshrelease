@@ -1,0 +1,4 @@
+---
+properties: 
+  influx:
+    event-filter: "HttpStop, CounterEvent, Error, HttpStart"

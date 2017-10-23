@@ -1,0 +1,12 @@
+---
+meta:
+  environment: NAME
+  dns_root: microbosh
+  stemcell:
+    name: STEMCELL
+
+director_uuid: PLACEHOLDER-DIRECTOR-UUID
+
+releases:
+  - name: influxdata-firehose-nozzle
+    version: latest

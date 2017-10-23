@@ -1,0 +1,23 @@
+meta:
+  environment: ~
+
+update:
+  canaries: 1
+  max_in_flight: 1
+  canary_watch_time: 1000-60000
+  update_watch_time: 1000-60000
+  serial: false
+
+jobs:
+  - name: influxdata-firehose-nozzle
+    templates:
+    - name: influxdata-firehose-nozzle
+      release: influxdata-firehose-nozzle
+    instances: 1
+    persistent_disk: 0
+    resource_pool: influxdata-nozzle-pool
+    networks: (( param "please set just_install_package networks" ))
+
+networks: (( param "please set networks" ))
+
+properties: {}
