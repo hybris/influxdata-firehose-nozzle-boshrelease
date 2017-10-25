@@ -44,10 +44,10 @@ properties:
     default: 15
   influx.prefix:
     description: "Measurement prefix"
-    default: "influxclient"
+    default: ""
   influx.deployment-name:
     description: "Deployment name"
-    default: "deployment-name"
+    default: ""
   influx.disable-access-control:
     description: "Disable influx DB access controll"
     default: false
@@ -56,7 +56,7 @@ properties:
     default: 60
   influx.deployment-filter:
     description: "Deployment filter"
-    default: "deployment-filter"
+    default: ""
   influx.event-filter:
     description: "Event filter"
     default: "HttpStop, CounterEvent, Error, HttpStart, HttpStartStop, ContainerMetric"
