@@ -1,0 +1,7 @@
+---
+builds:
+  ea16ded3-9739-4903-86d1-4f3f27430b22:
+    version: 0.1.0
+  4847b6c6-9ae1-44e5-84ed-2146af486a8e:
+    version: 0.2.0
+format-version: '2'
