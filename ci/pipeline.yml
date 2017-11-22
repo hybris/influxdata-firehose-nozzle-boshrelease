@@ -126,8 +126,7 @@ jobs:
       params: {file: version/number}
     - put: final-release
       params:
-        from: create-final-release/influxdata-firehose-nozzle-boshrelease/releases/influxdata-firehose-nozzle/influxdata-firehose-nozzle-(.*).tgz
-        to: influxdata-firehose-nozzle-boshrelease/
+        file: create-final-release/influxdata-firehose-nozzle-boshrelease/releases/influxdata-firehose-nozzle/influxdata-firehose-nozzle-*.tgz
     - put: github-final-release
       params:
         name: create-final-release/influxdata-firehose-nozzle-boshrelease/release/name
@@ -176,6 +175,6 @@ resources:
   type: s3
   source:
     bucket: blobs-yaas-idefix
-    regexp: influxdata-firehose-nozzle-boshrelease/influxdata-firehoze-nozzle-(.*).tgz
+    regexp: influxdata-firehose-nozzle-boshrelease/influxdata-firehose-nozzle-(.*).tgz
     access_key_id: ((user-aws-concourse.aws_access_key))
     secret_access_key: ((user-aws-concourse.aws_secret_key))
