@@ -1,0 +1,22 @@
+---
+packages:
+- name: golang1.7
+  version: 65a8c296d8c2319d411165f5dc837a63b3846c7b
+  fingerprint: 65a8c296d8c2319d411165f5dc837a63b3846c7b
+  sha1: 7a6d72d8ecf30b494ee9786555e00d65ba4653ba
+  dependencies: []
+- name: influxdata-firehose-nozzle
+  version: fcc4e39b2e9fd93f2d048f2571458db1d8fe733a
+  fingerprint: fcc4e39b2e9fd93f2d048f2571458db1d8fe733a
+  sha1: f1e45d194131856ad233c7c0ba424d3445cab360
+  dependencies:
+  - golang1.7
+jobs:
+- name: influxdata-firehose-nozzle
+  version: ec1a033a230d9fe32e72a251953827cb796d6c57
+  fingerprint: ec1a033a230d9fe32e72a251953827cb796d6c57
+  sha1: 75f886247c319bf8adbc609cdcd720b15f56446c
+commit_hash: 9d00d01a
+uncommitted_changes: true
+name: influxdata-firehose-nozzle
+version: 0.8.0
