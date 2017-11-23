@@ -57,8 +57,8 @@ case $1 in
     ;;
 
   stop)
-    kill_and_wait $PIDFILE
-
+    kill -9 `cat $PIDFILE`
+    rm -f $PIDFILE
     ;;
 
   *)
